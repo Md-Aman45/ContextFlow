@@ -1,18 +1,15 @@
 "use client";
 
 import { useState } from "react";
+
 import { useAppStore } from "@/store";
 import { ToolCard } from "./ToolCard";
 
-import { ToolExecution } from "@/store//slices/conversationSlice";
+export function ToolTimeline() {
+  const tools = useAppStore(
+    (state) => state.tools
+  );
 
-interface ToolTimelineProps {
-  tools: ToolExecution[];
-}
-
-export function ToolTimeline({
-  tools,
-}: ToolTimelineProps) {
   const [open, setOpen] = useState(false);
 
   return (

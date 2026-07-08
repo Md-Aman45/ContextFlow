@@ -1,20 +1,20 @@
 "use client";
 
 import { useState } from "react";
+
+import { useAppStore } from "@/store";
 import { ContextCard } from "./ContextCard";
 
-import { ContextSnapshot } from "@/store/slices/conversationSlice";
+export function ContextPanel() {
+  const contexts = useAppStore(
+    (state) => state.contexts
+  );
 
-interface ContextPanelProps {
-  contexts: ContextSnapshot[];
-}
-
-export function ContextPanel({
-  contexts,
-}: ContextPanelProps) {
-  
   const [open, setOpen] = useState(false);
-  if (contexts.length === 0) return null;
+
+  if (contexts.length === 0) {
+    return null;
+  }
 
   const latest = contexts[contexts.length - 1];
 
@@ -34,7 +34,7 @@ export function ContextPanel({
       </button>
 
       {open && (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {Object.entries(latest.data).map(([key, value]) => (
             <ContextCard
               key={key}
