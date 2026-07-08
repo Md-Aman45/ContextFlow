@@ -3,27 +3,34 @@
 > A protocol-driven AI client demonstrating real-time streaming, tool execution, context synchronization, and resilient WebSocket communication.
 
 ![Next.js](https://img.shields.io/badge/Next.js-15-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![React](https://img.shields.io/badge/React-19-61dafb)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-4-38BDF8)
 ![Zustand](https://img.shields.io/badge/Zustand-State-orange)
-![WebSocket](https://img.shields.io/badge/WebSocket-Protocol-success)
+![WebSocket](https://img.shields.io/badge/WebSocket-Real--Time-success)
 
 ---
 
-## 📖 Overview
+# 🚀 Overview
 
-ContextFlow is a modern AI client built around a custom protocol instead of traditional REST APIs.
+ContextFlow is a modern protocol-driven AI client built with Next.js, React, TypeScript, Zustand, and WebSockets.
 
-The application demonstrates how enterprise AI assistants communicate using event-driven WebSocket messages while supporting:
+Instead of using traditional REST-based request/response communication, ContextFlow demonstrates how modern AI assistants communicate through an event-driven protocol supporting real-time streaming, tool execution, and synchronized context updates.
 
-- Real-time token streaming
-- Tool execution lifecycle
-- Context synchronization
-- Automatic reconnection
-- State persistence
-- Responsive UI
+The project simulates an enterprise-grade AI client where every protocol event is visualized, making the internal workflow transparent and easy to understand.
 
-Unlike a simple chatbot, ContextFlow visualizes every stage of the AI protocol.
+---
+
+# ✨ Key Highlights
+
+- ⚡ Real-time token streaming
+- 🔧 Live tool execution timeline
+- 🧠 Context synchronization
+- 🔄 Automatic WebSocket reconnection
+- 💾 Persistent application state
+- 📱 Fully responsive UI
+- 🎯 Protocol-driven architecture
+- 🧩 Modular runtime design
 
 ---
 
@@ -31,76 +38,75 @@ Unlike a simple chatbot, ContextFlow visualizes every stage of the AI protocol.
 
 ## 💬 Streaming Responses
 
-Assistant messages stream token-by-token in real time.
+Assistant responses stream token-by-token in real time instead of waiting for the complete message.
 
 ---
 
-## 🔧 Tool Execution
+## 🔧 Tool Execution Timeline
 
-Every tool invocation is displayed with:
+Visualizes every tool invocation with:
 
+- Tool Name
+- Running Status
 - Arguments
-- Running status
-- Final result
+- Final Result
 
 ---
 
 ## 🧠 Context Synchronization
 
-Protocol context snapshots are synchronized independently from chat messages.
+Context snapshots are synchronized independently from chat messages, allowing structured protocol data to remain separate from conversations.
 
 ---
 
 ## 🔌 WebSocket Lifecycle
 
-Supports
+Supports complete connection management:
 
 - Connecting
 - Connected
 - Reconnecting
 - Disconnected
 
-with automatic recovery.
-
 ---
 
-## ♻ Auto Reconnect
+## ♻ Automatic Reconnection
 
 Implements exponential backoff:
 
+```
 500ms
-
 ↓
-
 1s
-
 ↓
-
 2s
-
 ↓
-
 4s
-
 ↓
-
 8s
-
 ↓
-
 10s
+```
 
 ---
 
 ## 💾 Persistent State
 
-Conversation history, tool executions, and context snapshots persist using Zustand Persist.
+Built with Zustand Persist.
+
+The application preserves:
+
+- Conversation history
+- Tool executions
+- Context snapshots
+
+even after refreshing the browser.
 
 ---
 
 ## 📱 Responsive Design
 
-Optimized for
+Optimized for:
 
 - Desktop
 - Tablet
@@ -110,8 +116,8 @@ Optimized for
 
 # 🏗 Architecture
 
-```
-                User
+```text
+                 User
                   │
                   ▼
           React Components
@@ -120,16 +126,60 @@ Optimized for
            Zustand Store
                   │
                   ▼
-         Protocol Runtime
+          Protocol Runtime
                   │
                   ▼
-      Connection Manager
+        Connection Manager
                   │
                   ▼
-            WebSocket
+             WebSocket
                   │
                   ▼
              AI Backend
+```
+
+---
+
+# 📡 Protocol Flow
+
+```text
+User
+ │
+ ▼
+USER_MESSAGE
+ │
+ ▼
+Server
+ │
+ ├── TOKEN
+ ├── TOKEN
+ ├── TOKEN
+ ├── TOOL_CALL
+ ├── TOOL_RESULT
+ ├── CONTEXT_SNAPSHOT
+ └── STREAM_END
+```
+
+---
+
+# 🔄 Connection Lifecycle
+
+```text
+Disconnected
+      │
+      ▼
+Connecting
+      │
+      ▼
+Connected
+      │
+Connection Lost
+      │
+      ▼
+Reconnecting
+      │
+      ▼
+Connected
 ```
 
 ---
@@ -138,8 +188,8 @@ Optimized for
 
 | Technology | Purpose |
 |------------|----------|
-| Next.js 15 | Frontend |
-| React 19 | UI |
+| Next.js 15 | Frontend Framework |
+| React 19 | UI Library |
 | TypeScript | Type Safety |
 | Tailwind CSS | Styling |
 | Zustand | State Management |
@@ -150,7 +200,7 @@ Optimized for
 
 # 📂 Project Structure
 
-```
+```text
 ContextFlow
 │
 ├── app/
@@ -167,7 +217,6 @@ ContextFlow
 ├── screenshots/
 ├── docs/
 └── README.md
-
 ```
 
 ---
@@ -180,94 +229,22 @@ Install dependencies
 npm install
 ```
 
-Start development server
+Start the frontend
 
 ```bash
 npm run dev
 ```
 
-Run backend
+Run the mock backend
 
 ```bash
 npm run server
 ```
 
-Open
+Open:
 
 ```
 http://localhost:3000
-```
-
----
-
-# 📡 Protocol Flow
-
-```
-User
-
-↓
-
-USER_MESSAGE
-
-↓
-
-Server
-
-↓
-
-TOKEN
-
-↓
-
-TOKEN
-
-↓
-
-TOKEN
-
-↓
-
-TOOL_CALL
-
-↓
-
-TOOL_RESULT
-
-↓
-
-CONTEXT_SNAPSHOT
-
-↓
-
-STREAM_END
-```
-
----
-
-# 🔄 Connection Lifecycle
-
-```
-Disconnected
-
-↓
-
-Connecting
-
-↓
-
-Connected
-
-↓
-
-Connection Lost
-
-↓
-
-Reconnecting
-
-↓
-
-Connected
 ```
 
 ---
@@ -276,61 +253,84 @@ Connected
 
 ## Landing Page
 
-Shows the application before a conversation begins.
-
-![Landing Page](./screenshots/landing_page_01.png)
+![Landing](./screenshots/landing_page_01.png)
 
 ---
 
-## Chat
+## Streaming Conversation
 
-Real-time assistant responses with token streaming.
+![Chat 1](./screenshots/chat_01.png)
 
-![Chat](./screenshots/chat_01.png)
-![Chat](./screenshots/chat_02.png)
+![Chat 2](./screenshots/chat_02.png)
 
 ---
 
 ## Context Snapshot
 
-Latest protocol context synchronized from the server.
-
-![Context Snapshot](./screenshots/context_snapshot.png)
+![Context](./screenshots/context_snapshot.png)
 
 ---
 
 ## Tool Timeline
 
-Visualizes tool calls, arguments, and execution results.
-
-![Tool Timeline](./screenshots/tool_timeline.png)
+![Tools](./screenshots/tool_timeline.png)
 
 ---
 
-## Responsive Mobile Layout
+## Mobile Responsive
 
-Optimized interface for smaller screens.
+![Mobile](./screenshots/mobile.png)
 
-![Mobile View](./screenshots/mobile.png)
+---
+
+# 🎯 Design Decisions
+
+- Event-driven architecture instead of REST polling
+- Separate runtime layer from UI components
+- Independent context synchronization
+- Modular protocol parser
+- Automatic reconnection with exponential backoff
+- Persistent global state using Zustand
+
+---
 
 # 📹 Demo
 
-Watch the complete walkthrough
+A walkthrough video covering:
 
-> A complete walkthrough video demonstrating architecture, protocol flow, streaming responses, context synchronization, and tool execution will be added soon.
+- Project architecture
+- WebSocket lifecycle
+- Streaming responses
+- Tool execution
+- Context synchronization
+- Responsive design
+
+will be available soon.
 
 ---
 
 # 📚 Documentation
 
-Detailed documentation is available inside the **docs/** folder.
+Additional documentation is available in the **docs/** folder.
 
 - Architecture
+- Runtime
 - Protocol
+- WebSocket Lifecycle
 - State Management
-- WebSocket
-- UI
 - Reconnection Strategy
+
+---
+
+# 🚀 Future Improvements
+
+- Conversation history sidebar
+- Multiple AI sessions
+- Authentication
+- Theme customization
+- Plugin system
+- Real backend integration
+- Docker deployment
 
 ---
 
@@ -338,16 +338,20 @@ Detailed documentation is available inside the **docs/** folder.
 
 **Md Aman**
 
-GitHub:
+GitHub
+
 https://github.com/Md-Aman45
 
-LinkedIn:
+LinkedIn
+
 https://www.linkedin.com/in/md-aman-7941a0355/
+
+Portfolio
+
+https://md-aman45.github.io/
 
 ---
 
-## License
+# 📄 License
 
 This project is licensed under the MIT License.
-
-See the LICENSE file for details.
