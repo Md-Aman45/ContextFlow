@@ -8,55 +8,53 @@ export function Navbar() {
   );
 
   const messages = useAppStore(
-    (state) => state.messages
+    (state) => state.messages.length
   );
 
   const tools = useAppStore(
-    (state) => state.tools
+    (state) => state.tools.length
   );
 
   const contexts = useAppStore(
-    (state) => state.contexts
+    (state) => state.contexts.length
   );
 
-  const getBadge = () => {
+  const badge = (() => {
     switch (connectionStatus) {
       case ConnectionStatus.CONNECTED:
         return {
-          color: "bg-green-500",
           text: "Connected",
+          dot: "bg-emerald-500",
         };
 
       case ConnectionStatus.CONNECTING:
         return {
-          color: "bg-yellow-500",
           text: "Connecting",
+          dot: "bg-yellow-500",
         };
 
       case ConnectionStatus.RECONNECTING:
         return {
-          color: "bg-orange-500",
           text: "Reconnecting",
+          dot: "bg-orange-500",
         };
 
       default:
         return {
-          color: "bg-red-500",
           text: "Disconnected",
+          dot: "bg-red-500",
         };
     }
-  };
-
-  const badge = getBadge();
+  })();
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-800 bg-black/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-4">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
 
         {/* Left */}
 
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold tracking-tight text-white">
             ⚡ ContextFlow
           </h1>
 
@@ -67,33 +65,79 @@ export function Navbar() {
 
         {/* Right */}
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-2">
 
-          <div className="flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-4 py-2">
-            <span
-              className={`h-2.5 w-2.5 rounded-full ${badge.color} animate-pulse`}
-            />
+          <StatusBadge
+            color={badge.dot}
+            text={badge.text}
+          />
 
-            <span className="text-sm font-medium">
-              {badge.text}
-            </span>
-          </div>
+          <SmallStat
+            icon="💬"
+            value={messages}
+          />
 
-          <div className="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm">
-            💬 <span className="font-semibold">{messages.length}</span>
-          </div>
+          <SmallStat
+            icon="🛠"
+            value={tools}
+          />
 
-          <div className="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm">
-            🛠 <span className="font-semibold">{tools.length}</span>
-          </div>
-
-          <div className="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm">
-            🧠 <span className="font-semibold">{contexts.length}</span>
-          </div>
+          <SmallStat
+            icon="🧠"
+            value={contexts}
+          />
 
         </div>
 
       </div>
     </header>
+  );
+}
+
+interface StatusBadgeProps {
+  color: string;
+  text: string;
+}
+
+function StatusBadge({
+  color,
+  text,
+}: StatusBadgeProps) {
+  return (
+    <div className="flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900 px-3 py-2">
+
+      <span
+        className={`h-2.5 w-2.5 rounded-full ${color} animate-pulse`}
+      />
+
+      <span className="text-sm font-medium text-white">
+        {text}
+      </span>
+
+    </div>
+  );
+}
+
+interface SmallStatProps {
+  icon: string;
+  value: number;
+}
+
+function SmallStat({
+  icon,
+  value,
+}: SmallStatProps) {
+  return (
+    <div className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-2">
+
+      <span className="text-sm">
+        {icon}
+      </span>
+
+      <span className="text-sm font-semibold text-white">
+        {value}
+      </span>
+
+    </div>
   );
 }

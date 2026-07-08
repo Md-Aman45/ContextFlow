@@ -109,12 +109,6 @@ export function ChatInput({
             <b>Shift + Enter</b> for a new line
           </span>
 
-          <span>
-            {connected
-              ? "🟢 Ready"
-              : "🔴 Offline"}
-          </span>
-
         </div>
 
       </div>
