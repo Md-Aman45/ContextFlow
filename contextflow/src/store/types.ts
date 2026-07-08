@@ -19,13 +19,3 @@ export type AppStore =
 
 
 
-
-  
-
-// export type AppStore =
-//     ConnectionSlice
-//   & StreamSlice
-//   & MessageSlice
-//   & ToolSlice
-//   & ContextSlice
-//   & TimelineSlice;

@@ -105,6 +105,7 @@ export function useProtocolRuntime() {
       },
 
       (event: ConnectionLifecycleEvent) => {
+        console.log("Lifecycle event:", event.state);
         switch (event.state) {
           case ConnectionState.CONNECTING:
             setConnectionStatus(ConnectionStatus.CONNECTING);
@@ -114,7 +115,12 @@ export function useProtocolRuntime() {
             setConnectionStatus(ConnectionStatus.CONNECTED);
             break;
 
+          case ConnectionState.RECONNECTING:
+            setConnectionStatus(ConnectionStatus.RECONNECTING);
+            break;
+
           case ConnectionState.DISCONNECTED:
+          case ConnectionState.CLOSED:
             setConnectionStatus(ConnectionStatus.DISCONNECTED);
             break;
         }

@@ -19,9 +19,17 @@ export class ConnectionManager {
   private state = ConnectionState.DISCONNECTED;
 
   /**
-   * Handles exponential reconnection delays.
+   * Handles exponential reconnect delays.
    */
-  private readonly reconnectStrategy = new ReconnectStrategy();
+  private readonly reconnectStrategy =
+    new ReconnectStrategy();
+
+  /**
+   * Active reconnect timer.
+   */
+  private reconnectTimer: ReturnType<
+    typeof setTimeout
+  > | null = null;
 
   /**
    * Handles protocol heartbeat logic.
@@ -29,16 +37,9 @@ export class ConnectionManager {
   private readonly heartbeat = new Heartbeat();
 
   /**
-   * Parses raw websocket payloads into protocol events.
+   * Parses incoming protocol messages.
    */
   private readonly parser = new MessageParser();
-
-  private notifyLifecycle(): void {
-    this.onLifecycle?.({
-      state: this.state,
-      timestamp: Date.now(),
-    });
-  }
 
   constructor(
     private readonly url: string,
@@ -47,7 +48,17 @@ export class ConnectionManager {
   ) {}
 
   /**
-   * Opens a websocket connection.
+   * Notify UI about lifecycle changes.
+   */
+  private notifyLifecycle(): void {
+    this.onLifecycle?.({
+      state: this.state,
+      timestamp: Date.now(),
+    });
+  }
+
+  /**
+   * Open websocket connection.
    */
   connect(): void {
     if (
@@ -57,9 +68,10 @@ export class ConnectionManager {
       return;
     }
 
-    this.state = ConnectionState.CONNECTING;
-
-    this.notifyLifecycle();
+    if (this.state !== ConnectionState.RECONNECTING) {
+      this.state = ConnectionState.CONNECTING;
+      this.notifyLifecycle();
+    }
 
     this.socket = new WebSocket(this.url);
 
@@ -67,11 +79,15 @@ export class ConnectionManager {
   }
 
   /**
-   * Closes the websocket connection.
+   * Close websocket connection.
    */
   disconnect(): void {
-    this.socket?.close();
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
 
+    this.socket?.close();
     this.socket = null;
 
     this.state = ConnectionState.CLOSED;
@@ -80,63 +96,35 @@ export class ConnectionManager {
   }
 
   /**
-   * Sends a protocol message to the server.
+   * Send protocol message.
    */
-
   send(message: ClientMessage): void {
-  console.log(
-    "📤 SEND CALLED",
-    message,
-    "STATE:",
-    this.state
-  );
+    if (
+      !this.socket ||
+      this.state !== ConnectionState.CONNECTED
+    ) {
+      return;
+    }
 
-  if (
-    !this.socket ||
-    this.state !== ConnectionState.CONNECTED
-  ) {
-    console.warn("❌ SEND BLOCKED");
-    return;
+    this.socket.send(JSON.stringify(message));
   }
 
-  this.socket.send(JSON.stringify(message));
-
-  console.log("✅ SENT");
-}
-  
-  // send(message: ClientMessage): void {
-  //   if (
-  //     !this.socket ||
-  //     this.state !== ConnectionState.CONNECTED
-  //   ) {
-  //     return;
-  //   }
-
-  //   // this.socket.send(JSON.stringify(message));
-  //   const payload = JSON.stringify(message);
-
-  //   this.socket.send(payload);
-  // }
-
   /**
-   * Returns the current connection state.
+   * Current connection state.
    */
   getState(): ConnectionState {
     return this.state;
   }
 
   /**
-   * Registers websocket event listeners.
+   * Register websocket callbacks.
    */
   private registerEventHandlers(): void {
     if (!this.socket) return;
 
     this.socket.onopen = this.handleOpen;
-
     this.socket.onmessage = this.handleMessage;
-
     this.socket.onerror = this.handleError;
-
     this.socket.onclose = this.handleClose;
   }
 
@@ -144,40 +132,76 @@ export class ConnectionManager {
    * Connection established.
    */
   private handleOpen = (): void => {
+    console.log("🟢 SOCKET OPEN");
     this.state = ConnectionState.CONNECTED;
 
     this.notifyLifecycle();
 
     this.reconnectStrategy.reset();
+
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+
+    // We'll start heartbeat here later.
+    // this.heartbeat.start(...);
   };
 
   /**
    * Incoming websocket message.
    */
-  private handleMessage = (event: MessageEvent): void => {
-    console.log("RAW WS:", event.data);
+  private handleMessage = (
+    event: MessageEvent
+  ): void => {
     try {
-      const protocolEvent = this.parser.parse(event.data);
+      const protocolEvent =
+        this.parser.parse(event.data);
 
       this.onEvent(protocolEvent);
     } catch (error) {
-      console.error("Protocol parsing failed:", error);
+      console.error(
+        "Protocol parsing failed:",
+        error
+      );
     }
   };
 
   /**
    * WebSocket error.
    */
-  private handleError = (event: Event): void => {
-    console.error("WebSocket error:", event);
+  private handleError = (): void => {
+    if (
+      this.state !== ConnectionState.CONNECTING
+    ) {
+      console.error("WebSocket error");
+    }
   };
 
   /**
-   * WebSocket closed.
+   * Connection closed.
    */
   private handleClose = (): void => {
-    this.state = ConnectionState.DISCONNECTED;
+    console.log("🔴 SOCKET CLOSED");
+    this.socket = null;
 
+    if (this.state === ConnectionState.CLOSED) {
+      return;
+    }
+
+    if (!this.reconnectStrategy.canReconnect()) {
+      this.state = ConnectionState.DISCONNECTED;
+      this.notifyLifecycle();
+      return;
+    }
+
+    this.state = ConnectionState.RECONNECTING;
     this.notifyLifecycle();
+
+    const delay = this.reconnectStrategy.nextDelay();
+
+    this.reconnectTimer = setTimeout(() => {
+      this.connect();
+    }, delay);
   };
 }
