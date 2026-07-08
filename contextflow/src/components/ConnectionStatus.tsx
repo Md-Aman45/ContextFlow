@@ -9,7 +9,6 @@ export function ConnectionStatus() {
   const status = useAppStore(
     (state) => state.connectionStatus
   );
-  console.log("🖥 UI ->", status);
 
   return (
     <div className="rounded-lg border p-4">

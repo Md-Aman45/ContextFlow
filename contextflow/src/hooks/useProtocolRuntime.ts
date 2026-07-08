@@ -105,7 +105,6 @@ export function useProtocolRuntime() {
       },
 
       (event: ConnectionLifecycleEvent) => {
-        console.log("Lifecycle event:", event.state);
         switch (event.state) {
           case ConnectionState.CONNECTING:
             setConnectionStatus(ConnectionStatus.CONNECTING);

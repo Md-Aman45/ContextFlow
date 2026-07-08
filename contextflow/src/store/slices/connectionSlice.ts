@@ -24,7 +24,6 @@ export const createConnectionSlice: StateCreator<
   connectionStatus: ConnectionStatus.DISCONNECTED,
 
   setConnectionStatus: (status) => {
-    console.log("🗄️ Store ->", status);
     set({
       connectionStatus: status,
     });

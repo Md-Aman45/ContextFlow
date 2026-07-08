@@ -132,7 +132,6 @@ export class ConnectionManager {
    * Connection established.
    */
   private handleOpen = (): void => {
-    console.log("🟢 SOCKET OPEN");
     this.state = ConnectionState.CONNECTED;
 
     this.notifyLifecycle();
@@ -169,20 +168,19 @@ export class ConnectionManager {
 
   /**
    * WebSocket error.
+   *
+   * The actual recovery is handled by `onclose`,
+   * so we intentionally avoid logging every transient
+   * network error to keep the console clean.
    */
   private handleError = (): void => {
-    if (
-      this.state !== ConnectionState.CONNECTING
-    ) {
-      console.error("WebSocket error");
-    }
+    // Intentionally left blank.
   };
 
   /**
    * Connection closed.
    */
   private handleClose = (): void => {
-    console.log("🔴 SOCKET CLOSED");
     this.socket = null;
 
     if (this.state === ConnectionState.CLOSED) {
