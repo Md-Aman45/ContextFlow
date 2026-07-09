@@ -309,7 +309,7 @@ A walkthrough video covering:
 - Context synchronization
 - Responsive design
 
-will be available soon.
+![Demo Video](https://www.loom.com/share/50e71da5631d46d5a0efd6ba4d9918de)
 
 ---
 
