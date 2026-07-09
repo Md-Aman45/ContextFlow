@@ -198,25 +198,29 @@ Connected
 
 ---
 
-# 📂 Project Structure
+## 📂 Project Structure
+
+The project follows a modular architecture that separates UI components, protocol handling, state management, and runtime logic.
 
 ```text
 ContextFlow
 │
-├── app/
-├── components/
-├── core/
-│   ├── protocol/
-│   ├── runtime/
-│   ├── parser/
-│   └── messages/
+├── src/
+│   ├── app/              # Next.js App Router
+│   ├── components/       # Reusable UI Components
+│   ├── core/             # Protocol, Runtime & Message Handling
+│   ├── hooks/            # Custom React Hooks
+│   ├── lib/              # Utility Functions
+│   └── store/            # Zustand State Management
 │
-├── hooks/
-├── lib/
-├── store/
-├── screenshots/
 ├── docs/
-└── README.md
+├── public/
+├── screenshots/
+├── tests/
+│
+├── package.json
+├── README.md
+└── LICENSE
 ```
 
 ---
